@@ -12,6 +12,7 @@ def main():
     
     for file in os.listdir('./images'):
         path = os.path.join('./images', file)
+        print(file)
         
         if os.path.isfile(path) and os.path.splitext(path)[1] in extensions:    
             img = cv2.imread(path)

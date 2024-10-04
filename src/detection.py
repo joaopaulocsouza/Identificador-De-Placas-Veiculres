@@ -41,7 +41,8 @@ def detection(img, name):
         (x, y, w, h) = cv2.boundingRect(plate)
         cropped = img[y:y+h, x:x+w]
         
-        text = pytesseract.image_to_string(cropped, config='--psm 8')
+        config = r'-c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 --psm 6'
+        text = pytesseract.image_to_string(cropped, lang='eng', config=config)
         print(f"Placa reconhecida: {text.strip()}")
         
         cv2.imshow('Image', cropped)
