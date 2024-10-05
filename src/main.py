@@ -17,9 +17,10 @@ def main():
         if os.path.isfile(path) and os.path.splitext(path)[1] in extensions:    
             img = cv2.imread(path)
             img_pre_processed = pre_processing(img)
-            detected = detection(img_pre_processed, get_image_name(path))
+            plate = detection(img_pre_processed, img, get_image_name(path))
             
-            # cv2.imshow('Imagem canny', detected)
-            # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
+            cv2.imshow('Imagem pre processed', img_pre_processed)
+            cv2.imshow('Plate', img_pre_processed)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
 main()

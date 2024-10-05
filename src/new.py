@@ -20,6 +20,9 @@ def recognition(image_path):
 
     edged = cv2.Canny(bfilter, 30, 200) #Edge detection
     plt.imshow(cv2.cvtColor(edged, cv2.COLOR_BGR2RGB))
+    cv2.imshow('Text Detection edeg', edged) #show the image
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     keypoints = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE) #Find contours 
     contours = imutils.grab_contours(keypoints) #Grab contours 

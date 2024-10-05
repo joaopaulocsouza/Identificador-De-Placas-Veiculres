@@ -7,15 +7,16 @@ def canny(img):
     return cv2.Canny(img, 30, 200)
 
 def dilate(img):
-    kernel = np.ones((5, 5), np.uint8)
+    kernel = np.ones((3, 3), np.uint8)
     return cv2.dilate(img, kernel, iterations=1)
 
 def erode(img):
-    kernel = np.ones((5, 5), np.uint8)
+    kernel = np.ones((3, 3), np.uint8)
     return cv2.erode(img, kernel, iterations=1)
 
 def find_contours(img):
-    contours, _ = cv2.findContours(img.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours = cv2.findContours(img.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours = imutils.grab_contours(contours)
     contours = sorted(contours, key=cv2.contourArea, reverse=True)[:10]
     
     for contour in contours:
@@ -27,8 +28,11 @@ def find_contours(img):
     return None
 
 
-def detection(img, name):
-    canny_img = canny(img)
+def detection(img_processed, img, name):
+    canny_img = canny(img_processed)
+    cv2.imshow('canny_detection', canny_img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     plate = find_contours(canny_img)
     
     if plate is None:
