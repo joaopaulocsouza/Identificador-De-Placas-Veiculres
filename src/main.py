@@ -17,6 +17,6 @@ def main():
         if os.path.isfile(path) and os.path.splitext(path)[1] in extensions:    
             img = cv2.imread(path)
             img_pre_processed = pre_processing(img)
-            plate = detection(img_pre_processed, img, get_image_name(path))
-            
+            cv2.imwrite(f"./out/pre_process/pre_processed_{get_image_name(path)}.jpg", img_pre_processed)
+            detection(img_pre_processed, img, get_image_name(path))
 main()
