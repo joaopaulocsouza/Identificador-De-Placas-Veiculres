@@ -27,7 +27,4 @@ def pre_processing_image(img):
     gray_img = adjust_color(img)
     # contrast_img = adjust_contrast(gray_img)
     noise_img = reduce_noise(gray_img)
-    cv2.imshow('Original', noise_img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
     return noise_img

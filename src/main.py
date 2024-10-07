@@ -19,8 +19,4 @@ def main():
             img_pre_processed = pre_processing(img)
             plate = detection(img_pre_processed, img, get_image_name(path))
             
-            cv2.imshow('Imagem pre processed', img_pre_processed)
-            cv2.imshow('Plate', img_pre_processed)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
 main()

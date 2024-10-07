@@ -30,12 +30,7 @@ def find_contours(img):
 
 def detection(img_processed, img, name):
     canny_img = canny(img_processed)
-    cv2.imshow('canny_detection', canny_img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
     plate = find_contours(canny_img)
-    
-    cv2.imshow('canny_detection', canny_img) 
     
     if plate is None:
         print('No plate detected')

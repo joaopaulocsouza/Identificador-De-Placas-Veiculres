@@ -36,10 +36,26 @@ def find_contours(img):
     for contour in contours:
         perimeter = cv2.arcLength(contour, True)
         approx = cv2.approxPolyDP(contour, 0.018 * perimeter, True)
+        
         if len(approx) == 4:
             return approx
         
     return None
+
+def adjust_plate(plate):
+    _, limiarized = cv2.threshold(plate, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    closing_img = cv2.morphologyEx(limiarized, cv2.MORPH_CLOSE, kernel)
+    opening_img = cv2.morphologyEx(closing_img, cv2.MORPH_OPEN, kernel)
+    dilated_img = cv2.dilate(opening_img, kernel, iterations=1)
+    eroded_img = cv2.erode(dilated_img, kernel, iterations=1)
+    
+    cv2.imshow('Ajusted plate', eroded_img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    
+    return eroded_img
 
 def draw(img, plate):
     mask = np.zeros(img.shape, np.uint8)
@@ -55,7 +71,8 @@ def detection(img, original, name):
     if plate is not None:
         cropped = draw(original, plate)
         cropped_filtered = draw(img, plate)
-        extract_text(cropped_filtered, cropped)
+        ajusted_img = adjust_plate(cropped_filtered)
+        extract_text(ajusted_img)
         cv2.imwrite(f"../out/plate/{name}_placa_recortada.jpg", cropped)
         
     return filtered_img

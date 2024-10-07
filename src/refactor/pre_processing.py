@@ -8,6 +8,9 @@ def apply_filters(img):
     gaussian = cv2.GaussianBlur(img, (3, 3), 0)
     return cv2.bilateralFilter(gaussian, 9, 75, 75)
 
+def limiarization(img):
+    return cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+
 def adjust_gamma(img, gamma=1.15): 
     invGamma = 1.0 / gamma
     table = np.array([((i / 255.0) ** invGamma) * 255 for i in np.arange(0, 256)]).astype('uint8')
@@ -25,7 +28,7 @@ def adjust_contrast(img):
     
 def pre_processing_image(img):
     gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    histogram_img = histogram_equalization(gray_img)
+    # histogram_img = histogram_equalization(gray_img)
     # contrasted_img = adjust_contrast(gray_img)
-    filtered_img = apply_filters(histogram_img) 
+    filtered_img = apply_filters(gray_img) 
     return filtered_img
