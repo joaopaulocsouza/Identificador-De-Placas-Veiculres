@@ -1,8 +1,12 @@
 import cv2
 import numpy as np
 
-def adjust_color(img):
-    return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+def histogram_equalization(img):
+    return cv2.equalizeHist(img)
+
+def apply_filters(img):
+    gaussian = cv2.GaussianBlur(img, (3, 3), 0)
+    return cv2.bilateralFilter(gaussian, 9, 75, 75)
 
 def adjust_gamma(img, gamma=1.15): 
     invGamma = 1.0 / gamma
@@ -14,20 +18,14 @@ def clahe(img):
     return clahe.apply(img)
 
 def adjust_contrast(img):
-    equalized = cv2.equalizeHist(img)  
-    clahe_img = clahe(equalized)       
+    clahe_img = clahe(img)       
     gamma_img = adjust_gamma(clahe_img)  
     return gamma_img
 
-
-def reduce_noise(img):
-    return cv2.bilateralFilter(img, 11, 15, 15) 
-
+    
 def pre_processing_image(img):
-    gray_img = adjust_color(img)
-    # contrast_img = adjust_contrast(gray_img)
-    noise_img = reduce_noise(gray_img)
-    cv2.imshow('Original', noise_img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    return noise_img
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    histogram_img = histogram_equalization(gray_img)
+    # contrasted_img = adjust_contrast(gray_img)
+    filtered_img = apply_filters(gray_img) 
+    return filtered_img
