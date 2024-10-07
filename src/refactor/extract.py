@@ -28,35 +28,54 @@ def threshold_transform(img):
     return cv2.threshold(img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
 
 def canny(img):
-    return cv2.Canny(img, 30, 200)
+    return cv2.Canny(img, 100, 200)
 
 def erode(img):
-    kernel = np.ones((2, 2), np.uint8)
+    kernel = np.ones((3, 3), np.uint8)
     return cv2.erode(img, kernel, iterations=1)
 
 def dilate(img):
-    kernel = np.ones((2, 2), np.uint8)
+    kernel = np.ones((3, 3), np.uint8)
     return cv2.dilate(img, kernel, iterations=1)
 
-def fill_holes(img):
-    return cv2.morphologyEx(img, cv2.MORPH_CLOSE, np.ones((2, 2), np.uint8))
+def draw(img, plate):
+    mask = np.zeros(img.shape, np.uint8)
+    cv2.drawContours(mask, [plate], 0, 255, -1)
+    (x, y, w, h) = cv2.boundingRect(plate)
+    cropped = img[y:y+h, x:x+w]
+    return cropped
 
-def apply_filters(img):
-    black_hat_img = black_hat_transform(img)
-    closing_transform_img = closing_transform(black_hat_img)
-    threshold_img = threshold_transform(closing_transform_img)
-    canny_img = canny(img)
-    erode_img = erode(canny_img)
-    dilated_img = dilate(canny_img)
-    combined = cv2.subtract(dilated_img, erode_img)
-    filled_img = fill_holes(combined)
-    cv2.imshow('Filled', filled_img)
+def fill_holes(img):
+    # Inverter a imagem para que as áreas escuras se tornem claras
+    inverted_img = cv2.bitwise_not(img)
+    
+    # Encontrar contornos
+    contours, _ = cv2.findContours(inverted_img, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+    contours = sorted(contours, key=cv2.contourArea, reverse=True)[:10]
+    
+    # Preencher buracos
+    for contour in contours:
+        approx = cv2.approxPolyDP(contour, 0.018 * cv2.arcLength(contour, True), True)
+        cropped = draw(inverted_img, approx)
+        cv2.imshow('Cropped', cropped)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+    
+    # Reverter a inversão para manter a imagem final no formato original
+    filled_img = cv2.bitwise_not(inverted_img)
     
     return filled_img
 
+def apply_filters(img):
+    canny_img = canny(img)
+    filled_img = fill_holes(canny_img)
+    return canny_img
 
-def extract_text(img):
+
+def extract_text(img, original_plate):
     filtered_img = apply_filters(img)
+    cv2.imshow('Filtered', apply_filters(img))
+    cv2.imshow('original', apply_filters(original_plate))
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     

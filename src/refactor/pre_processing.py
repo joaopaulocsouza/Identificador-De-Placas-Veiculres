@@ -27,5 +27,5 @@ def pre_processing_image(img):
     gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     histogram_img = histogram_equalization(gray_img)
     # contrasted_img = adjust_contrast(gray_img)
-    filtered_img = apply_filters(gray_img) 
+    filtered_img = apply_filters(histogram_img) 
     return filtered_img

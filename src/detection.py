@@ -35,6 +35,8 @@ def detection(img_processed, img, name):
     cv2.destroyAllWindows()
     plate = find_contours(canny_img)
     
+    cv2.imshow('canny_detection', canny_img) 
+    
     if plate is None:
         print('No plate detected')
         return img

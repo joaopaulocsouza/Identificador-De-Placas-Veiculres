@@ -26,6 +26,7 @@ def fourier_transform(img):
 
 def apply_filters(img):
     cannied = cv2.Canny(img, 30, 200)
+    # fourier_img = fourier_transform(cannied)
     return cannied
 
 def find_contours(img):
@@ -54,7 +55,7 @@ def detection(img, original, name):
     if plate is not None:
         cropped = draw(original, plate)
         cropped_filtered = draw(img, plate)
-        extract_text(cropped_filtered)
+        extract_text(cropped_filtered, cropped)
         cv2.imwrite(f"../out/plate/{name}_placa_recortada.jpg", cropped)
         
     return filtered_img
